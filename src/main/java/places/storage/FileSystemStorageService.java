@@ -86,4 +86,27 @@ public class FileSystemStorageService {
             }
         }
     }
+
+    public void saveListArticleAsCSV(List<Category> listCategory, String patToOutputFile) throws IOException {
+        Files.createDirectories(getOutputLocation());
+
+        try (FileWriter file = new FileWriter(patToOutputFile)) {
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < listCategory.size(); i++) {
+                String coordinates = ((Article) listCategory.get(i)).getGeoData().replaceAll("" + (char) (10), "");
+                output.append((i + 1))
+                        .append(";")
+                        .append(listCategory.get(i).getLang())
+                        .append(";")
+                        .append(listCategory.get(i).getName())
+                        .append(";")
+                        .append(listCategory.get(i).getReference())
+                        .append(";")
+                        .append(coordinates)
+                        //.append(",")
+                        .append("\n");
+            }
+            file.write(output.toString());
+        }
+    }
 }

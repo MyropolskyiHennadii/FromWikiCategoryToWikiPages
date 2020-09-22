@@ -14,6 +14,7 @@ import places.util.ViewNames;
 import places.wiki.Category;
 import places.wiki.ManageWikiCategoriesAndPages;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ListResultsController {
     public String showResults(Model model) {
 
         try {
-            log.info("Start page: "+ConstantsParsingWiki.getStartPage());
+            log.info("Start page: " + ConstantsParsingWiki.getStartPage());
             managerWiki.formListCategoryAtStartPage();
             model.addAttribute("nameOfResults", "Pages for " + ConstantsParsingWiki.getListCategories().get(0).getName());
             if (listArticles.size() == 0) {
@@ -58,10 +59,16 @@ public class ListResultsController {
     }
 
     @PostMapping(Mappings.RESULTS)
-    public String saveResults() {
+    public String saveResults(HttpServletRequest request) {
+
         try {
-            String fileName = storageService.getOutputLocation() + File.separator + ConstantsParsingWiki.getListCategories().get(0).getName().replaceAll(":", "_") + ".json";
-            storageService.saveListArticleAsJson(listArticles, fileName);
+            if (request.getParameter("saveAsJson").equals("true")) {
+                String fileName = storageService.getOutputLocation() + File.separator + ConstantsParsingWiki.getListCategories().get(0).getName().replaceAll(":", "_") + ".json";
+                storageService.saveListArticleAsJson(listArticles, fileName);
+            } else {
+                String fileName = storageService.getOutputLocation() + File.separator + ConstantsParsingWiki.getListCategories().get(0).getName().replaceAll(":", "_") + ".csv";
+                storageService.saveListArticleAsCSV(listArticles, fileName);
+            }
         } catch (IOException e) {
             log.error("Could not initialize storage or write json-file" + e.getMessage());
             ConstantsParsingWiki.setErrorMessage(e.getMessage());

@@ -10,7 +10,8 @@
  		</div>
 
  		<form method="POST" action="${Mappings.RESULTS}">
- 	        <button type="submit" class="btn btn-primary">Save table to json file </button>
+ 	        <button type="submit" class="btn btn-primary" name = "saveAsJson" value = "true">Save table to Json file </button>
+ 	        <button type="submit" class="btn btn-primary" name = "saveAsJson" value = "false">Save table to CSV file </button>
  	    </form>
  	    <br></br>
 
