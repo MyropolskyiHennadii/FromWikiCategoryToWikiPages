@@ -5,7 +5,7 @@ It may be useful, for instance, if you want receive all towns from category "Cit
 
 You can try, for instance, with https://en.wikipedia.org/wiki/Category:Romanesque_architecture
 
-You can save results in json-file.
+You can save results in json- or csv-file.
 
 The appllication is built on StringBoot and Java-jstl. Wiki-pages are parsing with jsoup. Results are saving to json-file with json-simple.
 
