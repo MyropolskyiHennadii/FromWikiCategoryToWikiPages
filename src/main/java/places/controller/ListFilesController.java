@@ -21,6 +21,8 @@ import places.wiki.ManageWikiCategoriesAndPages;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import static places.configuration.ConstantsParsingWiki.setStartPageWasChanged;
+
 @Controller
 public class ListFilesController {
 
@@ -44,6 +46,7 @@ public class ListFilesController {
 
     @GetMapping(Mappings.SAVED_FILES)
     public String showSavedFiles(Model model) {
+        setStartPageWasChanged(false);//for return to previous page without recalculation
         //file with results
         try {
             model.addAttribute("files", storageService.loadAllOutput().map(

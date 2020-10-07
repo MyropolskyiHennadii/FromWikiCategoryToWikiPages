@@ -33,6 +33,7 @@ public class HomeController {
         }
 
         ConstantsParsingWiki.setStartPage(startPage.trim());
+        ConstantsParsingWiki.setStartPageWasChanged(true);
         return "redirect:/" + Mappings.RESULTS;
     }
 

@@ -369,6 +369,7 @@ public class ManageWikiCategoriesAndPages {
         ConstantsParsingWiki.getSetArticles().clear();
         ConstantsParsingWiki.getSetUnusedArticles().clear();
         ConstantsParsingWiki.setStartPage("");
+        ConstantsParsingWiki.setStartPageWasChanged(true);
         ConstantsParsingWiki.setErrorMessage("");
     }
 

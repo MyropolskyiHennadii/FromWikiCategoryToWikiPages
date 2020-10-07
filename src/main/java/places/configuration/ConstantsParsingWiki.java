@@ -11,8 +11,9 @@ public class ConstantsParsingWiki {
     private static final List<Category> listCategories = new ArrayList<>();
     private static final Set<Article> setArticles = new HashSet<>();
     private static final Set<Article> setUnusedArticles = new HashSet<>();
-    private static String startPage = "https://en.wikipedia.org/wiki/Category:Romanesque_architecture";
+    private static String startPage = "";
     private static String errorMessage = "";
+    private static boolean startPageWasChanged = true;
     //private static final Map<Integer, Set<Category>> mapLanguagesWithOrderedCategory = new HashMap<>();//for no-normal sorting
 
     public ConstantsParsingWiki() {
@@ -67,5 +68,13 @@ public class ConstantsParsingWiki {
 
     public static void setErrorMessage(String errorMessage) {
         ConstantsParsingWiki.errorMessage = errorMessage;
+    }
+
+    public static boolean isStartPageWasChanged() {
+        return startPageWasChanged;
+    }
+
+    public static void setStartPageWasChanged(boolean startPageWasChanged) {
+        ConstantsParsingWiki.startPageWasChanged = startPageWasChanged;
     }
 }

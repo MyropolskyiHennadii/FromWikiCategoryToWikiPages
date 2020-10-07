@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static places.configuration.ConstantsParsingWiki.isStartPageWasChanged;
+
 @Controller
 public class ListResultsController {
 
@@ -42,7 +44,7 @@ public class ListResultsController {
             log.info("Start page: " + ConstantsParsingWiki.getStartPage());
             managerWiki.formListCategoryAtStartPage();
             model.addAttribute("nameOfResults", "Pages for " + ConstantsParsingWiki.getListCategories().get(0).getName());
-            if (listArticles.size() == 0) {
+            if (isStartPageWasChanged()) {
                 listArticles = managerWiki.doQueryToWikiCategory();
             }
             model.addAttribute("listArticles", listArticles);

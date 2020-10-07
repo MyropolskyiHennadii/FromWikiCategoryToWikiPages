@@ -12,6 +12,7 @@ public class ErrorController {
 
     @GetMapping(Mappings.ERROR)
     public String showError(Model model) {
+        ConstantsParsingWiki.setStartPageWasChanged(true);
         model.addAttribute("errorMessage", ConstantsParsingWiki.getErrorMessage());
         return ViewNames.ERROR;
     }
