@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import places.configuration.ConstantsParsingWiki;
 import places.wiki.Article;
 import places.wiki.Category;
@@ -108,5 +109,9 @@ public class FileSystemStorageService {
             }
             file.write(output.toString());
         }
+    }
+
+    public void deleteAllFiles(){
+        FileSystemUtils.deleteRecursively(getOutputLocation().toFile());
     }
 }

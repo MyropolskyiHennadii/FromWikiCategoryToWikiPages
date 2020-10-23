@@ -3,6 +3,10 @@
 
  <div class="container">
      	<br/>
+     	<form method="POST" action="${Mappings.SAVED_FILES}" align="center">
+              <button type="submit" class="btn btn-primary" name = "deleteAllFiles" value = "true">Delete all files </button>
+        </form>
+    	<br/>
      	<form method="POST" action="/files/{filename:.+}">
      	<div class="panel panel-primary" align="center">
      		<div class="panel-heading">

@@ -152,52 +152,6 @@ public class ManageWikiCategoriesAndPages {
     }
 
     /**
-     * because of 'no-normal'order of languages have to order languages in such a case
-     *
-     * @param mapCategory
-     * @param category
-     */
-    public void addLinkCategoryToLanguageOrderedMap(Map<Integer, Set<Category>> mapCategory, Category category) {
-        String lang = category.getLang();
-        switch (lang) {
-            case "en": {
-                mapCategory.get(1).add(category);
-                break;
-            }
-            case "fr": {
-                mapCategory.get(2).add(category);
-                break;
-            }
-            case "de": {
-                mapCategory.get(3).add(category);
-                break;
-            }
-            case "it": {
-                mapCategory.get(4).add(category);
-                break;
-            }
-            case "es": {
-                mapCategory.get(5).add(category);
-                break;
-            }
-            case "ro": {
-                mapCategory.get(6).add(category);
-                break;
-            }
-            case "ru": {
-                mapCategory.get(7).add(category);
-                break;
-            }
-            case "uk": {
-                mapCategory.get(8).add(category);
-                break;
-            }
-            default:
-                mapCategory.get(99).add(category);
-        }
-    }
-
-    /**
      * fill list of categories for the doc (page)
      *
      * @param doc
@@ -240,7 +194,6 @@ public class ManageWikiCategoriesAndPages {
 
         return orderedList;
     }
-
 
     /**
      * whether erticle exist already in list
@@ -310,7 +263,132 @@ public class ManageWikiCategoriesAndPages {
                 articles.add(new Article(getPageLanguage(doc), getPageTitle(doc), href, coordinate));
             }
         }
+    }
 
+    /**
+     * claring all variable before start
+     */
+    public static void clearAll() {
+        ConstantsParsingWiki.getListCategories().clear();
+        ConstantsParsingWiki.getLanguages().clear();
+        ConstantsParsingWiki.getSetArticles().clear();
+        ConstantsParsingWiki.getSetUnusedArticles().clear();
+        ConstantsParsingWiki.setStartPage("");
+        ConstantsParsingWiki.setStartPageWasChanged(true);
+        ConstantsParsingWiki.setErrorMessage("");
+    }
+
+    /**
+     * because of 'no-normal'order of languages have to order languages in such a case
+     *
+     * @param mapCategory
+     * @param category
+     */
+    public void addLinkCategoryToLanguageOrderedMap(Map<Integer, Set<Category>> mapCategory, Category category) {
+        String lang = category.getLang();
+        switch (lang) {
+            case "en": {
+                mapCategory.get(1).add(category);
+                break;
+            }
+            case "fr": {
+                mapCategory.get(2).add(category);
+                break;
+            }
+            case "de": {
+                mapCategory.get(3).add(category);
+                break;
+            }
+            case "it": {
+                mapCategory.get(4).add(category);
+                break;
+            }
+            case "es": {
+                mapCategory.get(5).add(category);
+                break;
+            }
+            case "ro": {
+                mapCategory.get(6).add(category);
+                break;
+            }
+            case "ru": {
+                mapCategory.get(7).add(category);
+                break;
+            }
+            case "uk": {
+                mapCategory.get(8).add(category);
+                break;
+            }
+            default:
+                mapCategory.get(99).add(category);
+        }
+    }
+
+    /**
+     * parse wiki-page for final pages-articles
+     *
+     * @param mw_pages tag from html
+     * @throws IOException
+     */
+    public void parseCategoryGroupForSimpleArticles(Element mw_pages) throws IOException {
+        Elements mw_category_group = mw_pages.getElementsByClass("mw-category-group");
+        if (!mw_category_group.isEmpty()) {//there are tags mw-category-group
+            for (Element group : mw_category_group) {
+                Elements links = group.select("a[href]");
+                for (Element link : links) {
+                    try {
+                        checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
+                    } finally {
+                        continue;
+                    }
+                }
+            }
+        } else {// there are no tags mw-category-group
+            Elements links = mw_pages.select("a[href]");
+            for (Element link : links) {
+                try {
+                    checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
+                } finally {
+                    continue;
+                }
+            }
+        }
+    }
+
+    /**
+     * parse wiki-page for subcategory's pages
+     *
+     * @param mw_subcategories tag from html
+     * @throws IOException
+     */
+    public void parseCategoryGroupForSubcategory(Element mw_subcategories, Document doc) throws IOException {
+        Elements mw_category_group = mw_subcategories.getElementsByClass("mw-category-group");
+        if (!mw_category_group.isEmpty()) {//there are tags mw-category-group
+            for (Element group : mw_category_group) {
+                Elements links = group.select("a[href]");
+                for (Element link : links) {
+                    try {
+                        findArticlesAndSubCategoryAtCategory(new Category(getPageLanguage(doc), link.attr("title"), link.attr("abs:href")));
+                    } finally {
+                        continue;
+                    }
+                }
+            }
+        } else {
+            Elements treeItems = mw_subcategories.getElementsByClass("CategoryTreeSection");
+            if (!treeItems.isEmpty()) {
+                for (Element item : treeItems) {
+                    Elements ahref_all = item.getElementsByTag("a");
+                    for (Element a : ahref_all) {
+                        try {
+                            findArticlesAndSubCategoryAtCategory(new Category(getPageLanguage(doc), a.attr("title"), a.attr("abs:href")));
+                        } finally {
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -333,44 +411,16 @@ public class ManageWikiCategoriesAndPages {
                     //simple articles
                     Element mw_pages = mw_content_text.getElementById("mw-pages");
                     if (mw_pages != null) {
-                        Elements mw_category_group = mw_pages.getElementsByClass("mw-category-group");
-                        for (Element group : mw_category_group) {
-                            Elements links = group.select("a[href]");
-                            for (Element link : links) {
-                                checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
-                            }
-                        }
+                        parseCategoryGroupForSimpleArticles(mw_pages);
                     }
                     //then: subcategories with recursion
                     Element mw_subcategories = mw_content_text.getElementById("mw-subcategories");
                     if (mw_subcategories != null) {
-                        Elements mw_category_group = mw_subcategories.getElementsByClass("mw-category-group");
-                        if (mw_category_group != null) {
-                            for (Element group : mw_category_group) {
-                                Elements links = group.select("a[href]");
-                                for (Element link : links) {
-                                    findArticlesAndSubCategoryAtCategory(new Category(getPageLanguage(doc), link.attr("title"), link.attr("abs:href")));
-                                }
-                            }
-                        }
+                        parseCategoryGroupForSubcategory(mw_subcategories, doc);
                     }
-
                 }
             }
         }
-    }
-
-    /**
-     * claring all variable before start
-     */
-    public static void clearAll() {
-        ConstantsParsingWiki.getListCategories().clear();
-        ConstantsParsingWiki.getLanguages().clear();
-        ConstantsParsingWiki.getSetArticles().clear();
-        ConstantsParsingWiki.getSetUnusedArticles().clear();
-        ConstantsParsingWiki.setStartPage("");
-        ConstantsParsingWiki.setStartPageWasChanged(true);
-        ConstantsParsingWiki.setErrorMessage("");
     }
 
     /**
