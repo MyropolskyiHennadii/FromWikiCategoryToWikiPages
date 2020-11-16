@@ -3,9 +3,10 @@
 This small application parses Wiki Category-page with its synonymic pages in different languages and shows all unique final pages (are not category) having geo-coordinates.
 It may be useful, for instance, if you want receive all towns from category "Cities in Ukraine", their coordinates and references to wiki-pages.
 
-You can try, for instance, with https://en.wikipedia.org/wiki/Category:Romanesque_architecture
+You can try, for instance, with https://en.wikipedia.org/wiki/Category:English_Gothic_architecture
 
 You can save results in json- or csv-file.
+There are some 'large' categories, that's why parsing may take a time.
 
 The appllication is built on StringBoot and Java-jstl. Wiki-pages are parsing with jsoup. Results are saving to json-file with json-simple.
 

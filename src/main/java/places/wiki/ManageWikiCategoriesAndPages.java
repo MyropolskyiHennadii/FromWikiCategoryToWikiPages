@@ -440,14 +440,18 @@ public class ManageWikiCategoriesAndPages {
     public List<Category> doQueryToWikiCategory() throws IOException {
 
         //getListCategories: list of Categories is ready at this point
-        for (Category category : ConstantsParsingWiki.getListCategories()) {
-            findArticlesAndSubCategoryAtCategory(category);
+        if (ConstantsParsingWiki.getListCategories().size() > 0) {
+            for (Category category : ConstantsParsingWiki.getListCategories()) {
+                findArticlesAndSubCategoryAtCategory(category);
+            }
         }
 
         //ordering Set of articles, recieve List
         Map<Integer, Set<Category>> orderedByLanguages = ConstantsParsingWiki.createMapLanguagesWithOrderedCategory();
-        for (Article article : ConstantsParsingWiki.getSetArticles()) {
-            addLinkCategoryToLanguageOrderedMap(orderedByLanguages, article);
+        if (ConstantsParsingWiki.getSetArticles().size() > 0) {
+            for (Article article : ConstantsParsingWiki.getSetArticles()) {
+                addLinkCategoryToLanguageOrderedMap(orderedByLanguages, article);
+            }
         }
         return getOrderedListOfCategories(orderedByLanguages);
     }

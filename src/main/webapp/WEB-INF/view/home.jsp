@@ -9,7 +9,7 @@
       		<h4> This small application parses Category Wiki-page with its synonymic pages in different languages</h4>
             <h4> and shows all unique final pages (are not category) having geo-coordinates.</h4>
             <br> </br>
-            <h6> You can try, for instance, with https://en.wikipedia.org/wiki/Category:Romanesque_architecture</h6>
+            <h6> You can try, for instance, with https://en.wikipedia.org/wiki/Category:English_Gothic_architecture</h6>
       		<br> </br>
      		<div class="panel-heading">
      		    <h2> Insert link to Wiki-category here </h2>
