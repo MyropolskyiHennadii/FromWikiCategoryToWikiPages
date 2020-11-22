@@ -53,6 +53,10 @@ public class ListResultsController {
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
             log.error(e.getMessage());
             return "redirect:/" + Mappings.ERROR;
+        } catch (InterruptedException e) {
+            ConstantsParsingWiki.setErrorMessage(e.getMessage());
+            log.error(e.getMessage());
+            return "redirect:/" + Mappings.ERROR;
         } catch (IllegalArgumentException e) {
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
             log.error(e.getMessage());

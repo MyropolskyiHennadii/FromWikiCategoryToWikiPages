@@ -220,10 +220,16 @@ public class ManageWikiCategoriesAndPages {
      * @param title header
      * @throws IOException
      */
-    public static void checkAndAddSimpleArticleToSet(String href, String title) throws IOException {
+    public static void checkAndAddSimpleArticleToSet(String href, String title) throws IOException, InterruptedException {
         boolean articleExists = false;
         Set<Article> articles = ConstantsParsingWiki.getSetArticles();
         Set<Article> unusedArticles = ConstantsParsingWiki.getSetUnusedArticles();
+
+        //because of large categories...
+        if (articles.size() > 5000) {
+            log.error("Sorry, it's a very big category. Try parse smaller category!");
+            throw new InterruptedException("Sorry, it's very big category. Try more smaller category!");
+        }
 
         if (articles.contains(new Article("", title, href, ""))) {
             //already exists
@@ -330,7 +336,7 @@ public class ManageWikiCategoriesAndPages {
      * @param mw_pages tag from html
      * @throws IOException
      */
-    public void parseCategoryGroupForSimpleArticles(Element mw_pages) throws IOException {
+    public void parseCategoryGroupForSimpleArticles(Element mw_pages) throws InterruptedException {
         Elements mw_category_group = mw_pages.getElementsByClass("mw-category-group");
         if (!mw_category_group.isEmpty()) {//there are tags mw-category-group
             for (Element group : mw_category_group) {
@@ -338,7 +344,9 @@ public class ManageWikiCategoriesAndPages {
                 for (Element link : links) {
                     try {
                         checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
-                    } finally {
+                    } catch (InterruptedException e) {
+                        throw e;
+                    } catch (IOException e){
                         continue;
                     }
                 }
@@ -348,7 +356,9 @@ public class ManageWikiCategoriesAndPages {
             for (Element link : links) {
                 try {
                     checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
-                } finally {
+                } catch (InterruptedException e) {
+                    throw e;
+                } catch (IOException e){
                     continue;
                 }
             }
@@ -361,7 +371,7 @@ public class ManageWikiCategoriesAndPages {
      * @param mw_subcategories tag from html
      * @throws IOException
      */
-    public void parseCategoryGroupForSubcategory(Element mw_subcategories, Document doc) throws IOException {
+    public void parseCategoryGroupForSubcategory(Element mw_subcategories, Document doc) throws InterruptedException {
         Elements mw_category_group = mw_subcategories.getElementsByClass("mw-category-group");
         if (!mw_category_group.isEmpty()) {//there are tags mw-category-group
             for (Element group : mw_category_group) {
@@ -369,7 +379,9 @@ public class ManageWikiCategoriesAndPages {
                 for (Element link : links) {
                     try {
                         findArticlesAndSubCategoryAtCategory(new Category(getPageLanguage(doc), link.attr("title"), link.attr("abs:href")));
-                    } finally {
+                    } catch (InterruptedException e) {
+                        throw e;
+                    } catch (IOException e){
                         continue;
                     }
                 }
@@ -382,7 +394,9 @@ public class ManageWikiCategoriesAndPages {
                     for (Element a : ahref_all) {
                         try {
                             findArticlesAndSubCategoryAtCategory(new Category(getPageLanguage(doc), a.attr("title"), a.attr("abs:href")));
-                        } finally {
+                        } catch (InterruptedException e) {
+                            throw e;
+                        } catch (IOException e) {
                             continue;
                         }
                     }
@@ -397,7 +411,7 @@ public class ManageWikiCategoriesAndPages {
      * @param category
      * @throws IOException
      */
-    public void findArticlesAndSubCategoryAtCategory(Category category) throws IOException {
+    public void findArticlesAndSubCategoryAtCategory(Category category) throws IOException, InterruptedException {
 
         String startPage = category.getReference().trim();
         Document doc = Jsoup.connect(startPage).get();
@@ -437,7 +451,7 @@ public class ManageWikiCategoriesAndPages {
      * @return List of results
      * @throws IOException
      */
-    public List<Category> doQueryToWikiCategory() throws IOException {
+    public List<Category> doQueryToWikiCategory() throws IOException, InterruptedException {
 
         //getListCategories: list of Categories is ready at this point
         if (ConstantsParsingWiki.getListCategories().size() > 0) {
@@ -446,7 +460,7 @@ public class ManageWikiCategoriesAndPages {
             }
         }
 
-        //ordering Set of articles, recieve List
+        //ordering Set of articles, receive List
         Map<Integer, Set<Category>> orderedByLanguages = ConstantsParsingWiki.createMapLanguagesWithOrderedCategory();
         if (ConstantsParsingWiki.getSetArticles().size() > 0) {
             for (Article article : ConstantsParsingWiki.getSetArticles()) {
