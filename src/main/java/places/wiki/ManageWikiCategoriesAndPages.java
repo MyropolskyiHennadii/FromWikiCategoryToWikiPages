@@ -1,7 +1,5 @@
 package places.wiki;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,11 +14,8 @@ import java.util.Set;
 
 public class ManageWikiCategoriesAndPages {
 
-    //private static final Logger log = Logger.getLogger(WebMain.class);//without spring
-    private static final Logger log = LogManager.getLogger(ManageWikiCategoriesAndPages.class);
-
     /**
-     * get a languge of page (doc)
+     * get a language of page (doc)
      *
      * @param doc html doc
      * @return
@@ -169,7 +164,7 @@ public class ManageWikiCategoriesAndPages {
                 addLinkCategoryToLanguageOrderedMap(mapCategory, link);
             }
         } else {
-            log.info("There is no element 'p-lang' in " + doc.baseUri());
+            //todo
         }
         return (getOrderedListOfCategories(mapCategory));
     }
@@ -196,7 +191,7 @@ public class ManageWikiCategoriesAndPages {
     }
 
     /**
-     * whether erticle exist already in list
+     * whether article exist already in list
      *
      * @param categories
      * @param articles
@@ -227,7 +222,6 @@ public class ManageWikiCategoriesAndPages {
 
         //because of large categories...
         if (articles.size() > 5000) {
-            log.error("Sorry, it's a very big category. Try parse smaller category!");
             throw new InterruptedException("Sorry, it's very big category. Try more smaller category!");
         }
 
@@ -244,35 +238,37 @@ public class ManageWikiCategoriesAndPages {
         }
 
         if (!articleExists) {
-            //check geodata. If there is => ok. if there isn't => ommit
+            //check geodata. If there is => ok. if there isn't => omit
             Element scriptElement = doc.getElementsByTag("script").first();
-            String wholeText = scriptElement.dataNodes().get(0).getWholeData();
-            int iPos = wholeText.indexOf("\"wgCoordinates\"");
-            String coordinate = "";
-            if (iPos > -1) {
-                wholeText = wholeText.substring(iPos + 16);
-                iPos = wholeText.indexOf("}");
-                if (iPos >= 1) {
-                    coordinate = wholeText.substring(0, iPos + 1);
-                }
-            }
-            if (coordinate.isEmpty()) {//without geodata
-                if (!unusedArticles.contains(new Article("", title, href, ""))) {
-                    //doesn't exist directly
-                    if (!referenceExistsInList(synonymArticlesInOtherLanguages, unusedArticles)) {
-                        //doesn't exist in synonyms
-                        unusedArticles.add(new Article(getPageLanguage(doc), getPageTitle(doc), href, ""));
+            if (scriptElement != null) {
+                String wholeText = scriptElement.dataNodes().get(0).getWholeData();
+                int iPos = wholeText.indexOf("\"wgCoordinates\"");
+                String coordinate = "";
+                if (iPos > -1) {
+                    wholeText = wholeText.substring(iPos + 16);
+                    iPos = wholeText.indexOf("}");
+                    if (iPos >= 1) {
+                        coordinate = wholeText.substring(0, iPos + 1);
                     }
                 }
-            } else {
-                //create object and add it to Set articles with geodata
-                articles.add(new Article(getPageLanguage(doc), getPageTitle(doc), href, coordinate));
+                if (coordinate.isEmpty()) {//without geodata
+                    if (!unusedArticles.contains(new Article("", title, href, ""))) {
+                        //doesn't exist directly
+                        if (!referenceExistsInList(synonymArticlesInOtherLanguages, unusedArticles)) {
+                            //doesn't exist in synonyms
+                            unusedArticles.add(new Article(getPageLanguage(doc), getPageTitle(doc), href, ""));
+                        }
+                    }
+                } else {
+                    //create object and add it to Set articles with geodata
+                    articles.add(new Article(getPageLanguage(doc), getPageTitle(doc), href, coordinate));
+                }
             }
         }
     }
 
     /**
-     * claring all variable before start
+     * clearing all variable before start
      */
     public static void clearAll() {
         ConstantsParsingWiki.getListCategories().clear();
@@ -346,7 +342,7 @@ public class ManageWikiCategoriesAndPages {
                         checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
                     } catch (InterruptedException e) {
                         throw e;
-                    } catch (IOException e){
+                    } catch (IOException e) {
                         continue;
                     }
                 }
@@ -358,7 +354,7 @@ public class ManageWikiCategoriesAndPages {
                     checkAndAddSimpleArticleToSet(link.attr("abs:href"), link.attr("title"));
                 } catch (InterruptedException e) {
                     throw e;
-                } catch (IOException e){
+                } catch (IOException e) {
                     continue;
                 }
             }
@@ -381,7 +377,7 @@ public class ManageWikiCategoriesAndPages {
                         findArticlesAndSubCategoryAtCategory(new Category(getPageLanguage(doc), link.attr("title"), link.attr("abs:href")));
                     } catch (InterruptedException e) {
                         throw e;
-                    } catch (IOException e){
+                    } catch (IOException e) {
                         continue;
                     }
                 }

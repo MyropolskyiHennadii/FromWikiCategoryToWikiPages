@@ -1,7 +1,5 @@
 package places.storage;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -10,7 +8,6 @@ import org.springframework.util.FileSystemUtils;
 import places.configuration.ConstantsParsingWiki;
 import places.wiki.Article;
 import places.wiki.Category;
-import places.wiki.ManageWikiCategoriesAndPages;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,7 +21,6 @@ import java.util.stream.Stream;
 @Service
 public class FileSystemStorageService {
 
-    private static final Logger log = LogManager.getLogger(ManageWikiCategoriesAndPages.class);
     private final Path outputLocation = Paths.get("saveResults-dir");
 
     public Path getOutputLocation() {
@@ -37,7 +33,6 @@ public class FileSystemStorageService {
                     .filter(path -> !path.equals(getOutputLocation()))
                     .map(getOutputLocation()::relativize);
         } catch (IOException e) {
-            log.error("Failed to load stored files: " + e.getMessage());
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
             throw new IOException("Failed to read stored files", e);
         }
@@ -54,12 +49,10 @@ public class FileSystemStorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                log.error("Could not load file: " + filename);
                 throw new StorageFileNotFoundException(
                         "Could not read file: " + filename);
             }
         } catch (MalformedURLException e) {
-            log.error("Could not read file: " + filename);
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);
         }
     }

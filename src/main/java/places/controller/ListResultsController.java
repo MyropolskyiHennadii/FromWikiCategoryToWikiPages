@@ -1,7 +1,5 @@
 package places.controller;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +23,6 @@ import static places.configuration.ConstantsParsingWiki.isStartPageWasChanged;
 @Controller
 public class ListResultsController {
 
-    private static final Logger log = LogManager.getLogger(ManageWikiCategoriesAndPages.class);
     public static List<Category> listArticles = new ArrayList<>();
     private final FileSystemStorageService storageService;
 
@@ -41,7 +38,7 @@ public class ListResultsController {
     public String showResults(Model model) {
 
         try {
-            log.info("Start page: " + ConstantsParsingWiki.getStartPage());
+            //log.info("Start page: " + ConstantsParsingWiki.getStartPage());
             managerWiki.formListCategoryAtStartPage();
             model.addAttribute("nameOfResults", "Pages for " + ConstantsParsingWiki.getListCategories().get(0).getName());
             if (isStartPageWasChanged()) {
@@ -51,15 +48,12 @@ public class ListResultsController {
             return ViewNames.RESULTS;
         } catch (IOException e) {
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
-            log.error(e.getMessage());
             return "redirect:/" + Mappings.ERROR;
         } catch (InterruptedException e) {
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
-            log.error(e.getMessage());
             return "redirect:/" + Mappings.ERROR;
         } catch (IllegalArgumentException e) {
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
-            log.error(e.getMessage());
             return "redirect:/" + Mappings.ERROR;
         }
     }
@@ -76,7 +70,6 @@ public class ListResultsController {
                 storageService.saveListArticleAsCSV(listArticles, fileName);
             }
         } catch (IOException e) {
-            log.error("Could not initialize storage or write json-file" + e.getMessage());
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
             return "redirect:/" + Mappings.ERROR;
         }

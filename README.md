@@ -9,7 +9,7 @@ You can save results in json- or csv-file.
 There are some 'large' categories, that's why parsing may take a time.
 I've added the exception for categories with more than 5000 articles (because of the server... And I don't want organize MySQL database for keeping temporary set of articles.)
 
-The appllication is built on StringBoot and Java-jstl. Wiki-pages are parsing with jsoup. Results are saving to json-file with json-simple.
+The application is built on StringBoot and Java-jstl. Wiki-pages are parsing with jsoup. Results are saving to json-file with json-simple.
 
 It works here:
 http://94.130.181.51:8091/wiki_category_parse

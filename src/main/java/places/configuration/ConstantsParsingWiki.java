@@ -14,7 +14,6 @@ public class ConstantsParsingWiki {
     private static String startPage = "";
     private static String errorMessage = "";
     private static boolean startPageWasChanged = true;
-    //private static final Map<Integer, Set<Category>> mapLanguagesWithOrderedCategory = new HashMap<>();//for no-normal sorting
 
     public ConstantsParsingWiki() {
     }

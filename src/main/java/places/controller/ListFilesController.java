@@ -1,7 +1,5 @@
 package places.controller;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +15,6 @@ import places.configuration.ConstantsParsingWiki;
 import places.storage.FileSystemStorageService;
 import places.util.Mappings;
 import places.util.ViewNames;
-import places.wiki.ManageWikiCategoriesAndPages;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -27,7 +24,6 @@ import static places.configuration.ConstantsParsingWiki.setStartPageWasChanged;
 @Controller
 public class ListFilesController {
 
-    private static final Logger log = LogManager.getLogger(ManageWikiCategoriesAndPages.class);
     private final FileSystemStorageService storageService;
 
     @Autowired
@@ -57,7 +53,6 @@ public class ListFilesController {
 
         } catch (IOException e) {
             ConstantsParsingWiki.setErrorMessage(e.getMessage());
-            log.error(e.getMessage());
             return "redirect:/" + Mappings.ERROR;
         }
 
